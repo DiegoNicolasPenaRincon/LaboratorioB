@@ -114,14 +114,40 @@ def interseccionConjuntos(conjunto1, conjunto2,estado):
     return interseccion
 
 """Genera la cerradura estrella de un lenguaje, hasta cierto punto claramente"""
-def generarEstrella(lenguaje, alfabeto,cantidadConcatenaciones):
+def generarEstrella(lenguajeUtilizar,cantidadConcatenaciones):
+    global alfabeto
     nuevoLenguaje = set()
+    lenguajeAuxiliar=set()
+    if lenguajeUtilizar=='lenguaje 1':
+        global lenguaje1
+        lenguajeAuxiliar=set(lenguaje1)
+    elif lenguajeUtilizar=='lenguaje 2':
+        global lenguaje2
+        lenguajeAuxiliar = set(lenguaje2)
+    else:
+        global lenguaje3
+        lenguajeAuxiliar=set(lenguaje3)
     while cantidadConcatenaciones > 0:
         for elemento1 in alfabeto:
-            for elemento2 in lenguaje:
+            for elemento2 in lenguajeAuxiliar:
                 nuevoLenguaje.add(elemento1 + elemento2)
+        lenguajeAuxiliar.update(nuevoLenguaje)
         cantidadConcatenaciones -= 1
-    return nuevoLenguaje
+    nuevoLenguaje.update(lenguajeAuxiliar)
+    nuevoLenguaje.add('ε')
+
+    if lenguajeUtilizar == 'lenguaje 1':
+        global cerraduraEstrella1
+        cerraduraEstrella1=set(nuevoLenguaje)
+        print(cerraduraEstrella1)
+    elif lenguajeUtilizar == 'lenguaje 2':
+        global cerraduraEstrella2
+        cerraduraEstrella2=set(nuevoLenguaje)
+        print(cerraduraEstrella2)
+    else:
+        global cerraduraEstrella3
+        cerraduraEstrella3=set(nuevoLenguaje)
+        print(cerraduraEstrella3)
 
 """Verificar si una palabra es palindroma"""
 
@@ -140,7 +166,7 @@ def establecerContinuar(alfabeto):
     alfabetoApoyo=igualarArreglo(alfabeto)
     if len(alfabeto)!=0:
         ventana2 = Tk()
-        ventana2.geometry("1080x1920")
+        ventana2.geometry("1200x1920")
 
         global lenguaje1
         global lenguaje2
@@ -165,10 +191,11 @@ def establecerContinuar(alfabeto):
         lenguaje2MostrarLabel = Label(ventana2, width=30, height=15, padx=20,pady=20,text=lenguaje2)
         lenguaje3MostrarLabel = Label(ventana2, width=30, height=15, padx=20,pady=20,text=lenguaje3)
 
-        cantidadConcatenacionesSpBox=Spinbox(ventana2,from_=0,to=5,state="readonly")
-        cantidadConcatenacionesLabel=Label(ventana2, text="Ingrese la cantidad de concatenaciones de su cerradura estrella", font=('Times', 14), bg='orange')
+        cantidadConcatenacionesSpBox=Spinbox(ventana2,from_=0,to=3,state="readonly")
+        cantidadConcatenacionesLabel=Label(ventana2, text="Cantidad de concatenaciones de su cerradura estrella", font=('Times', 14), bg='orange')
         lenguajeCerraduraSpnBox=Spinbox(ventana2,state="readonly",values=['lenguaje 1','lenguaje 2','lenguaje 3'])
-        generarCerraduraEstrellaButton=Button(ventana2,text="Generar cerradura estrella", font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,1),mostrarPopUp(interseccion1_2)])
+        generarCerraduraEstrellaButton=Button(ventana2,text="Generar cerradura estrella", font=('Times', 14), bg='orange',command=lambda: generarEstrella(lenguajeCerraduraSpnBox.get(),int(cantidadConcatenacionesSpBox.get())) )
+        resultadosLabel=Label(ventana2, text="Resultados operacion", font=('Times', 14))
 
         lenguaje1MostrarLabel.grid(row=2, column=0, padx=30)
         lenguaje2MostrarLabel.grid(row=2, column=2, padx=30)
@@ -185,6 +212,9 @@ def establecerContinuar(alfabeto):
         cantidadConcatenacionesLabel.grid(row=5,column=0)
         cantidadConcatenacionesSpBox.grid(row=5,column=2)
         lenguajeCerraduraSpnBox.grid(row=5,column=3)
+        generarCerraduraEstrellaButton.grid(row=6,column=2,pady=30)
+        resultadosLabel.grid(row=7,column=0)
+
 
 
         print(lenguaje1)
