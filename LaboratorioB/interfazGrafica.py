@@ -84,14 +84,15 @@ continuarButton=Button(ventana,text='Formar lenguajes',font=('Times',12),bg='Ora
 
 unionButton=Button(ventana,text='Interseccion',font=('Times',12),bg='Orange')
 
-
+lenguajesFormadosText=Text(ventana,width=30,height=20)
 
 tituloLabel.grid(row=0,column=2,pady=30)
 ingresarCantidadLabel.grid(row=2,column=0,padx=20,pady=30)
 ingresarCantidadEntry.grid(row=2,column=1)
 ingresarCantidadButton.grid(row=3,column=1)
-continuarButton.grid(row=3,column=3)
-unionButton.grid(row=4,column=1)
+continuarButton.grid(row=3,column=3,pady=30)
+lenguajesFormadosText.grid(row=4,column=0)
+#unionButton.grid(row=4,column=1)
 
 ventana.mainloop()
 
