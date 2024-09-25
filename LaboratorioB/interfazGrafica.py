@@ -34,12 +34,6 @@ def establecerContinuar(alfabeto):
     alfabetoApoyo=[]
     alfabetoApoyo=igualarArreglo(alfabeto)
     if len(alfabeto)!=0:
-        ventana2 = Tk()
-        ventana2.geometry("720x1080")
-
-        tituloOperacionesLabel = Label(ventana, text="Bienvenidos", font=('Times', 25), bg='orange')
-        
-
         global lenguaje1
         global lenguaje2
         global lenguaje3
@@ -76,7 +70,7 @@ def formarLenguajes(alfabeto, lenguajeApoyo):
 
 """Interfaz grafica"""
 ventana=Tk()
-ventana.geometry("600x300")
+ventana.geometry("1080x1920")
 
 tituloLabel=Label(ventana,text="Bienvenidos",font=('Times', 25),bg='orange')
 
@@ -88,13 +82,16 @@ ingresarCantidadButton=Button(ventana,text='Ingresar simbolo',font=('Times',12),
 
 continuarButton=Button(ventana,text='Formar lenguajes',font=('Times',12),bg='Orange',command=lambda: establecerContinuar(alfabeto))
 
+unionButton=Button(ventana,text='Interseccion',font=('Times',12),bg='Orange')
 
 
-tituloLabel.grid(row=0,column=1,pady=30)
+
+tituloLabel.grid(row=0,column=2,pady=30)
 ingresarCantidadLabel.grid(row=2,column=0,padx=20,pady=30)
 ingresarCantidadEntry.grid(row=2,column=1)
-ingresarCantidadButton.grid(row=3,column=0)
-continuarButton.grid(row=3,column=1)
+ingresarCantidadButton.grid(row=3,column=1)
+continuarButton.grid(row=3,column=3)
+unionButton.grid(row=4,column=1)
 
 ventana.mainloop()
 
