@@ -1,8 +1,9 @@
 from tkinter import *
 import random
-from tkinter import ttk
 
-"""Variables importantes"""
+from tkinter import messagebox
+
+#Variables importantes
 
 alfabeto=set()
 lenguaje1=set()
@@ -17,12 +18,9 @@ interseccion2_3=set()
 cerraduraEstrella1=set()
 cerraduraEstrella2=set()
 cerraduraEstrella3=set()
+mostrarResultadosOperacion=Label
 
-"""Validaciones"""
-
-
-
-"""Metodos"""
+#Metodos
 
 """Pide los elementos del alfabeto al usuario"""
 def pedirElementos(simbolo,alfabeto):
@@ -34,15 +32,6 @@ def pedirElementos(simbolo,alfabeto):
     #print(len(simbolo))
     return alfabeto
 
-"""Retorna un string con los elementos de un conjunto"""
-def imprimirConjunto(lenguaje):
-    lenguajeString='['
-    for elemento in lenguaje:
-        lenguajeString+=elemento
-        lenguajeString+=','
-    lenguajeString+=']'
-    return lenguajeString
-
 """Crea un arreglo, que rellena con los elementos del conjunto alfabeto, esto se hizo asi para que sea
 mucho mas facil obtener los elementos del conjunto"""
 def igualarArreglo(alfabeto):
@@ -51,7 +40,7 @@ def igualarArreglo(alfabeto):
         lenguaje.append(elementoAlfabeto)
     return lenguaje
 
-"""Forma un lenguaje aleatorio, concatenandose con el mismo. Hay que tener en cuenta que la concatenacion va hasta 3"""
+"""Forma un lenguaje aleatorio, concatenandose con el mismo. Hay que tener en cuenta que el alfabeto solo se concatena tres veces"""
 def formarLenguajes(alfabeto, lenguajeApoyo):
     lenguajeRetorno = set()
     alfabeto=igualarArreglo(alfabeto)
@@ -113,20 +102,24 @@ def interseccionConjuntos(conjunto1, conjunto2,estado):
 
     return interseccion
 
-"""Genera la cerradura estrella de un lenguaje, hasta cierto punto claramente"""
+"""Genera la cerradura estrella de un lenguaje, hasta cierto punto"""
 def generarEstrella(lenguajeUtilizar,cantidadConcatenaciones):
     global alfabeto
     nuevoLenguaje = set()
     lenguajeAuxiliar=set()
+    estado=0
     if lenguajeUtilizar=='lenguaje 1':
         global lenguaje1
         lenguajeAuxiliar=set(lenguaje1)
+        estado=7
     elif lenguajeUtilizar=='lenguaje 2':
         global lenguaje2
         lenguajeAuxiliar = set(lenguaje2)
+        estado=8
     else:
         global lenguaje3
         lenguajeAuxiliar=set(lenguaje3)
+        estado=9
     while cantidadConcatenaciones > 0:
         for elemento1 in alfabeto:
             for elemento2 in lenguajeAuxiliar:
@@ -149,24 +142,86 @@ def generarEstrella(lenguajeUtilizar,cantidadConcatenaciones):
         cerraduraEstrella3=set(nuevoLenguaje)
         print(cerraduraEstrella3)
 
+    modificarLabel(estado)
+
+"""Muestra los resultados de la operacion del lenguaje que el usuario escoja"""
+def modificarLabel(estado):
+    if estado==1:
+        mostrarResultadosOperacion.config(text=union1_2,font=('Times', 10),wraplength=800)
+    elif estado==2:
+        mostrarResultadosOperacion.config(text=union1_3, font=('Times', 10),wraplength=800)
+    elif estado==3:
+        mostrarResultadosOperacion.config(text=union2_3, font=('Times', 10),wraplength=800)
+    elif estado==4:
+        mostrarResultadosOperacion.config(text=interseccion1_2, font=('Times', 10),wraplength=800)
+    elif estado==5:
+        mostrarResultadosOperacion.config(text=interseccion1_3, font=('Times', 10),wraplength=800)
+    elif estado==6:
+        mostrarResultadosOperacion.config(text=interseccion2_3, font=('Times', 10),wraplength=800)
+    elif estado==7:
+        mostrarResultadosOperacion.config(text=cerraduraEstrella1, font=('Times', 10),wraplength=800)
+    elif estado==8:
+        mostrarResultadosOperacion.config(text=cerraduraEstrella2, font=('Times', 10),wraplength=800)
+    elif estado==9:
+        mostrarResultadosOperacion.config(text=cerraduraEstrella3, font=('Times', 10),wraplength=800)
+
 """Verificar si una palabra es palindroma"""
+def verificarPalindrocidad(palabra):
+    palabra=palabra.strip()
+    if palabra!='':
+        contador = len(palabra) - 1
+        palabraReversa = ''
+        while contador > -1:
+            palabraReversa += palabra[contador]
+            contador -= 1
+        if palabraReversa == palabra:
+             messagebox.showinfo('Informacion','La palabra es palindroma')
+        else:
+            messagebox.showinfo('Informacion', 'La palabra no es palindroma')
+    else:
+        messagebox.showerror('Error', 'Ingrese bien la palabra porfavor')
 
+"""Inviertre una palabra"""
+def invertirCadena(palabra):
+    palabra=palabra.strip()
+    if palabra!='':
+        contador = len(palabra) - 1
+        palabraReversa = ''
+        while contador > -1:
+            palabraReversa += palabra[contador]
+            contador -= 1
+        messagebox.showinfo('Palabra invertida', palabraReversa)
+    else:
+        messagebox.showerror('Error', 'Ingrese bien la palabra porfavor')
 
-"""Muestra un Pop up con el resultado de una operacion entre dos lenguajes"""
-
-def mostrarPopUp(lenguaje):
+"""Inicializa la ventana de gestion de palabras"""
+def mostrarInterfazPalabras():
     ventana3=Tk()
-    ventana3.geometry("200x300")
-    mostrarResultadoLable=Label(ventana3, text=lenguaje, font=('Times', 14))
-    mostrarResultadoLable.grid(row=0, column=0)
+    ventana3.geometry("600x400")
+    ventana3.title('Gestion de palabras')
+
+    titulopalindromaLabel=Label(ventana3, text="Gestion de palabras", font=('Times', 25),bg='orange')
+    ingresarPalindromaLabel=Label(ventana3, text="Ingrese la palabra", font=('Times', 14),bg='orange')
+    ingresarPalabraEntry = Entry(ventana3, font=('Times', 14))
+    verificarPalindromaButton = Button(ventana3, text='Verificar palindroma', font=('Times', 12), bg='Orange',command= lambda: verificarPalindrocidad(ingresarPalabraEntry.get()))
+    invertirPalabraButton=Button(ventana3, text="Invertir cadena", font=('Times', 12), bg='Orange',command= lambda: invertirCadena(ingresarPalabraEntry.get()))
+
+    titulopalindromaLabel.grid(row=0, column=1,pady=30)
+    ingresarPalindromaLabel.grid(row=1,column=0,padx=30)
+    ingresarPalabraEntry.grid(row=1,column=1,pady=30)
+    verificarPalindromaButton.grid(row=2,column=1,pady=30)
+    invertirPalabraButton.grid(row=3,column=1)
+
     ventana3.mainloop()
 
+"""Instancia la interfaz que muestra las operaciones con lenguajes"""
 def establecerContinuar(alfabeto):
     alfabetoApoyo=[]
     alfabetoApoyo=igualarArreglo(alfabeto)
     if len(alfabeto)!=0:
         ventana2 = Tk()
         ventana2.geometry("1200x1920")
+        ventana2.title('Operaciones con lenguajes')
 
         global lenguaje1
         global lenguaje2
@@ -177,15 +232,17 @@ def establecerContinuar(alfabeto):
         alfabetoApoyo = igualarArreglo(alfabeto)
         lenguaje3=formarLenguajes(alfabetoApoyo,alfabetoApoyo)
 
+        global mostrarResultadosOperacion
+        mostrarResultadosOperacion = Label(ventana2)
         lenguaje1Label = Label(ventana2, text="Lenguaje 1", font=('Times', 14), bg='orange')
         lenguaje2Label = Label(ventana2, text="Lenguaje 2", font=('Times', 14), bg='orange')
         lenguaje3Label = Label(ventana2, text="Lenguaje 3", font=('Times', 14), bg='orange')
-        unionButton1_2 = Button(ventana2, text="Union lenguaje 1 y 2", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje1,lenguaje2,1),mostrarPopUp(union1_2)])
-        unionButton1_3 = Button(ventana2, text="Union lenguaje 1 y 3", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje1,lenguaje3,2),mostrarPopUp(union1_3)])
-        unionButton2_3 = Button(ventana2, text="Union lenguaje 2 y 3", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje2,lenguaje3,3),mostrarPopUp(union2_3)])
-        interseccionButton1_2=Button(ventana2,text="Interseccion lenguaje 1 y 2", font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,1),mostrarPopUp(interseccion1_2)])
-        interseccionButton1_3=Button(ventana2,text="Interseccion lenguaje 1 y 3",font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,2),mostrarPopUp(interseccion1_3)])
-        intersecccionButton2_3=Button(ventana2,text="Interseccion lenguaje 2 y 3",font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,3),mostrarPopUp(interseccion2_3)])
+        unionButton1_2 = Button(ventana2, text="Union lenguaje 1 y 2", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje1,lenguaje2,1),modificarLabel(1)])
+        unionButton1_3 = Button(ventana2, text="Union lenguaje 1 y 3", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje1,lenguaje3,2),modificarLabel(2)])
+        unionButton2_3 = Button(ventana2, text="Union lenguaje 2 y 3", font=('Times', 14), bg='orange',command=lambda: [unionConjuntos(lenguaje2,lenguaje3,3),modificarLabel(3)])
+        interseccionButton1_2=Button(ventana2,text="Interseccion lenguaje 1 y 2", font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,1),modificarLabel(4)])
+        interseccionButton1_3=Button(ventana2,text="Interseccion lenguaje 1 y 3",font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,2),modificarLabel(5)])
+        intersecccionButton2_3=Button(ventana2,text="Interseccion lenguaje 2 y 3",font=('Times', 14), bg='orange',command=lambda: [interseccionConjuntos(lenguaje1,lenguaje2,3),modificarLabel(6)])
 
         lenguaje1MostrarLabel = Label(ventana2, width=30, height=15, padx=20,pady=20,text=lenguaje1)
         lenguaje2MostrarLabel = Label(ventana2, width=30, height=15, padx=20,pady=20,text=lenguaje2)
@@ -195,7 +252,7 @@ def establecerContinuar(alfabeto):
         cantidadConcatenacionesLabel=Label(ventana2, text="Cantidad de concatenaciones de su cerradura estrella", font=('Times', 14), bg='orange')
         lenguajeCerraduraSpnBox=Spinbox(ventana2,state="readonly",values=['lenguaje 1','lenguaje 2','lenguaje 3'])
         generarCerraduraEstrellaButton=Button(ventana2,text="Generar cerradura estrella", font=('Times', 14), bg='orange',command=lambda: generarEstrella(lenguajeCerraduraSpnBox.get(),int(cantidadConcatenacionesSpBox.get())) )
-        resultadosLabel=Label(ventana2, text="Resultados operacion", font=('Times', 14))
+        resultadosLabel=Label(ventana2, text="Resultados operacion", font=('Times', 14),bg='orange')
 
         lenguaje1MostrarLabel.grid(row=2, column=0, padx=30)
         lenguaje2MostrarLabel.grid(row=2, column=2, padx=30)
@@ -213,7 +270,8 @@ def establecerContinuar(alfabeto):
         cantidadConcatenacionesSpBox.grid(row=5,column=2)
         lenguajeCerraduraSpnBox.grid(row=5,column=3)
         generarCerraduraEstrellaButton.grid(row=6,column=2,pady=30)
-        resultadosLabel.grid(row=7,column=0)
+        resultadosLabel.grid(row=7,column=0,pady=30)
+        mostrarResultadosOperacion.grid(row=8,column=0)
 
 
 
@@ -222,12 +280,16 @@ def establecerContinuar(alfabeto):
         print(lenguaje3)
 
         ventana2.mainloop()
+    else:
+        messagebox.showerror('Error', 'No puede continuar con el alfabeto vacio')
 
 
+"""Ventana principal"""
 
-"""Interfaz grafica"""
 ventana=Tk()
-ventana.geometry("600x400")
+ventana.geometry("500x400")
+
+ventana.title('Pagina principal')
 
 tituloLabel=Label(ventana,text="Bienvenidos",font=('Times', 25),bg='orange')
 
@@ -239,14 +301,14 @@ ingresarCantidadButton=Button(ventana,text='Ingresar simbolo',font=('Times',12),
 
 continuarButton=Button(ventana,text='Formar lenguajes',font=('Times',12),bg='Orange',command=lambda: establecerContinuar(alfabeto))
 
-unionButton=Button(ventana,text='Interseccion',font=('Times',12),bg='Orange')
+interfazPalabrasButton=Button(ventana,text='Gestion de palindromas',font=('Times',12),bg='Orange',command=lambda: mostrarInterfazPalabras())
 
 tituloLabel.grid(row=0,column=1,pady=30)
-ingresarCantidadLabel.grid(row=2,column=0,padx=20,pady=30)
-ingresarCantidadEntry.grid(row=2,column=1)
-ingresarCantidadButton.grid(row=3,column=1)
-continuarButton.grid(row=3,column=2)
-#unionButton.grid(row=4,column=1)
+ingresarCantidadLabel.grid(row=2,column=1,pady=30)
+ingresarCantidadEntry.grid(row=3,column=1)
+ingresarCantidadButton.grid(row=4,column=1,pady=20)
+continuarButton.grid(row=5,column=1,pady=20)
+interfazPalabrasButton.grid(row=6,column=0)
 
 ventana.mainloop()
 
